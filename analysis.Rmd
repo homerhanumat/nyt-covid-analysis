@@ -1,0 +1,177 @@
+---
+title: "Initial Analysis of NYT COVID-19 Data"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::readthedown:
+    highlight: kate
+    toc_depth: 2
+    code_download: true
+---
+
+
+```{r setup, include = FALSE}
+library(tidyverse)
+#library(reactable)
+#library(plotly)
+#devtools::install_github("UrbanInstitute/urbnmapr")
+#library(urbnmapr)
+#library(mapview)
+load("data/nyt_counties.rda")
+load("data/nyt_states.rda")
+knitr::opts_chunk$set(
+  size = "small",
+  error = TRUE,
+  fig.align = "center",
+  tidy = FALSE
+)
+```
+
+## Prereqs and Setup
+
+### R Packages
+
+You will need to install the following packages:
+
+```{r eval = FALSE}
+install.packages(c(
+  "tidyverse",
+  "reactable",
+  "mapview"
+))
+devtools::install_github("UrbanInstitute/urbnmapr")
+```
+
+
+Some of these packages require package **sf**, which cannot be installed on the GC RStudio Server.  You will need to work on your own machine.
+
+
+### Setup
+
+**TODO**
+
+## Line Graphs
+
+Looking at states with a threshold of confirmed cases, make line graphs of the number of cases against the number of days since the threshold was reached.
+
+```{r}
+threshold <- 500
+```
+
+
+```{r}
+t_states <-
+  nyt_states %>% 
+  group_by(state) %>% 
+  filter(cases >= threshold) %>% 
+  arrange(date) %>% 
+  mutate(day_number = row_number()) %>% 
+  arrange(state)
+```
+
+Have a look:
+
+```{r}
+reactable::reactable(t_states, searchable = TRUE)
+```
+
+The line graph
+
+
+```{r}
+ggplot(t_states, aes(x = day_number, y = cases)) +
+  geom_line(aes(color = state))
+```
+
+Too many!
+
+Make a function out of this:
+
+```{r}
+make_graph <- function(threshold = 500, included) {
+  p <-
+    nyt_states %>% 
+    filter(state %in% included) %>% 
+    group_by(state) %>% 
+    filter(cases >= threshold) %>% 
+    arrange(date) %>% 
+    mutate(day_number = row_number()) %>% 
+    ggplot(aes(x = day_number, y = cases,
+               label1 = state, label2 = date, 
+               label3 = cases, label4 = deaths)) +
+      geom_line(aes(color = state)) +
+      labs(x = "days since threshold reached",
+           y = "confirmed cases")
+    plotly::ggplotly(p, tooltip = c("label1", "label2",
+                                    "label3", "label4")) %>% 
+      plotly::config(displayModeBar = FALSE)
+}
+```
+
+Give it a try:
+
+```{r}
+included <- c("California", "Washington", "New York", "Louisiana")
+make_graph(included = included)
+```
+
+## Kentucky Map for a Day
+
+### Note
+
+The following plots use R packages that require package **sf**, which cannot be installed on the Gc RStudio Server.
+
+### Data
+
+Get the data:
+
+```{r}
+day <- "2020-04-03"
+## devtools::install_github("UrbanInstitute/urbnmapr")
+counties_sf <- urbnmapr::get_urbn_map("counties", sf = TRUE)
+ky <-
+  nyt_counties %>% 
+  filter(date == day & state == "Kentucky") %>% 
+  right_join(counties_sf %>% filter(state_name == "Kentucky"),
+             by = c("fips" = "county_fips")) %>% 
+  mutate(cases = ifelse(is.na(cases), 0, cases),
+         deaths = ifelse(is.na(deaths), 0, deaths))
+```
+
+### ggplot2
+
+**ggplot2** has native support for simple features:
+
+
+```{r}
+ggplot() +
+  geom_sf(ky,
+          mapping = aes(fill = cases, geometry = geometry),
+          color = "white", size = 0.05) +
+  coord_sf(datum = NA) +
+  labs(fill = "Confirmed Cases")
+```
+
+Sure would be nice to get **plotly** working with this.
+
+### mapview
+
+There is also **mapview**:
+
+```{r}
+ky %>% 
+  sf::st_as_sf() %>% 
+  ## install.packages("mapview")
+  mapview::mapview(zcol = c("cases", "deaths", "county_name"))
+```
+
+
+
+
+
+
+
+
+
+
+
+
