@@ -161,7 +161,13 @@ The following plots use R packages that require package **sf**, which cannot be 
 Get the data:
 
 ```{r}
-day <- "2020-04-03"
+## get the most recent available day:
+day <-
+  nyt_counties %>% 
+  pull(date) %>% 
+  unique() %>% 
+  sort(decreasing = TRUE) %>% 
+  .[1]
 ## devtools::install_github("UrbanInstitute/urbnmapr")
 counties_sf <- urbnmapr::get_urbn_map("counties", sf = TRUE)
 ky <-
@@ -184,7 +190,8 @@ ggplot() +
           mapping = aes(fill = cases, geometry = geometry),
           color = "white", size = 0.05) +
   coord_sf(datum = NA) +
-  labs(fill = "Confirmed Cases")
+  labs(fill = "Confirmed Cases",
+       title = paste0("Kentucky COVID-19 Cases as of ", day))
 ```
 
 Sure would be nice to get **plotly** working with this.
