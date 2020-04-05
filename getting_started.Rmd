@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Prereqs and Setup
+## Prerequisites and Setup
 
 ### R Packages
 
@@ -42,12 +42,12 @@ devtools::install_github("UrbanInstitute/urbnmapr")
 ```
 
 
-Some of these packages require package **sf**, which cannot be installed on the GC RStudio Server.  You will need to work on your own machine.
+Some of these packages require package **sf**, which cannot be installed on the GC R Studio Server.  You will need to work on your own machine.
 
 
-### Create Your RStudio Project
+### Create Your R Studio Project
 
-You will work with a repository that contains the NYT data as a submodule, so the process of creating an RStudio project will be different than usual.
+You will work with a repository that contains the NYT data as a submodule, so the process of creating an R Studio project will be different than usual.
 
 1. Open your terminal and `cd` to wherever you keep your git-controlled projects.
 2. Clone my repository along with its submodule:
@@ -56,13 +56,13 @@ You will work with a repository that contains the NYT data as a submodule, so th
     git clone --recursive https://github.com/homerhanumat/nyt-covid-analysis.git
     ```
     
-3.  In Rstudio ask to create a new Project, in an existing directory.  Specify the directory that was created by the clone in the previous step.
+3.  In R Studio ask to create a new Project, in an existing directory.  Specify the directory that was created by the clone in the previous step.
 
 ### Updating
 
-The purpose of having the NYT data as a submodule in our repository is to permit you to keep you to track your analysis work separately from the data on which your analysis is based.  With your temrinal's working directory set to the root directory of your project, git commands such as `add`, `commit` and (should you choose to create a remote on Github) `push` will apply to your project only and will have no effect on the contents of the `covid-19-data` folder within it.
+The purpose of having the NYT data as a submodule in our repository is to permit you to keep you to track your analysis work separately from the data on which your analysis is based.  With your terminal's working directory set to the root directory of your project, git commands such as `add`, `commit` and (should you choose to create a remote on Github) `push` will apply to your project only and will have no effect on the contents of the `covid-19-data` folder within it.
 
-Always rememeber that the `covid-19-data` directory in your repo is a git submodule that links to the NYT repo.  Don't modify anything in this directory!
+Always remember that the `covid-19-data` directory in your repo is a git submodule that links to the NYT repo.  Don't modify anything in this directory!
 
 The New York Times updates its repository every day, and you will want to keep up with those changes.  The submodule allows you to accomplish this without interfering with any of your analysis work.   In order to update the data, take the following to steps:
 
@@ -154,7 +154,7 @@ make_graph(included = included)
 
 ### Note
 
-The following plots use R packages that require package **sf**, which cannot be installed on the Gc RStudio Server.
+The following plots use R packages that require package **sf**, which cannot be installed on the GC R Studio Server.
 
 ### Data
 
