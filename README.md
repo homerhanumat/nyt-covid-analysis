@@ -10,6 +10,7 @@ You will need to install the following packages:
 
 ```{r eval = FALSE}
 install.packages(c(
+  "rmdformats",
   "tidyverse",
   "reactable",
   "mapview"

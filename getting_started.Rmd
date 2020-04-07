@@ -21,6 +21,8 @@ load("data/nyt_states.rda")
 knitr::opts_chunk$set(
   size = "small",
   error = TRUE,
+  warning = FALSE,
+  message = FALSE,
   fig.align = "center",
   tidy = FALSE
 )
@@ -34,6 +36,7 @@ You will need to install the following packages:
 
 ```{r eval = FALSE}
 install.packages(c(
+  "rmdformats",
   "tidyverse",
   "reactable",
   "mapview"
